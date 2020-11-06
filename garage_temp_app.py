@@ -1,7 +1,7 @@
 from sense_hat import SenseHat
 import psycopg2 as db
 
-conn = db.connect("dbname=garage_temp_log")
+conn = db.connect("dbname=garage_temps")
 cur = conn.cursor()
 
 sense = SenseHat()
