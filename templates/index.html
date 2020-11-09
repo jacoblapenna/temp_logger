@@ -19,11 +19,12 @@
 
   <body>
 
-    <img id="dynamicImage" src="/static/img/temperature_vs_time.png">
+    <img id="dynamicImage" src="{{ url_for('static', filename='img/temperature_vs_time.png') }}">
 
     <script>
 
-      document.getElementById("dynamicImage").prop("src", "/static/img/temperature_vs_time.png?" + new Date().valueOf());
+      var src_append = "?" + new Date().valueOf();
+      document.getElementById("dynamicImage").src += src_append;
 
     </script>
 
