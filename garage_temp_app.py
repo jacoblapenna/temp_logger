@@ -7,7 +7,7 @@ conn = db.connect("dbname=garage_temps")
 cur = conn.cursor()
 
 table = "test"
-cur.execute(f"CREATE TABLE {table} (time float, temp float);")
+cur.execute(f"CREATE TABLE {table} IF NOT EXIST (time float, temp float);")
 
 sense = SenseHat()
 
