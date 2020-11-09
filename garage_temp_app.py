@@ -16,12 +16,6 @@ import time
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-conn = pg.connect("dbname=garage_temps")
-cur = conn.cursor()
-
-table = "test"
-cur.execute(f"CREATE TABLE IF NOT EXISTS {table} (time float, temp float);")
-
 sense = SenseHat()
 
 def get_ip_address():
@@ -62,21 +56,26 @@ def insert_temp():
     # commit entry to database
     conn.commit()
 
-def record_data():
+def record_data(table):
     """ run in another process to log data """
+
+    conn = pg.connect("dbname=garage_temps")
+    cur = conn.cursor()
+
+    cur.execute(f"CREATE TABLE IF NOT EXISTS {table} (time float, temp float);")
 
     while True:
         try:
             insert_temp()
             time.sleep(1)
-            plot_data()
+            plot_data(cur, table)
         except KeyboardInterrupt:
             break
 
-def plot_data():
+def plot_data(cursor, table):
     """ create png of plotted data for page to serve """
 
-    cur.execute(f"SELECT * FROM {table};")
+    cursor.execute(f"SELECT * FROM {table};")
     data = pd.DataFrame(np.array(cur.fetchall()), columns=["time", "temp"])
     critical_temp = 65
 
@@ -115,7 +114,7 @@ def homepage():
 
 if __name__ == "__main__":
 
-    logger = Process(target=record_data)
+    logger = Process(target=record_data, args=("test",))
     logger.start()
 
     ip = get_ip_address()

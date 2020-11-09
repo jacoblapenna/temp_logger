@@ -13,17 +13,19 @@
 
     </style>
 
-    <script>
-
-      $("#dynamicImage").prop("src", "/static/img/temperature_vs_time.png?" + new Date().valueOf());
-
-    </script>
+    <script src="{{ url_for('static', filename='js/jquery-3.3.1.js') }}"></script>
 
   </head>
 
   <body>
 
     <img id="dynamicImage" src="/static/img/temperature_vs_time.png">
+
+    <script>
+
+      document.getElementById("dynamicImage").prop("src", "/static/img/temperature_vs_time.png?" + new Date().valueOf());
+
+    </script>
 
   </body>
 
