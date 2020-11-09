@@ -27,10 +27,10 @@ def insert_temp():
 
     # get temp data and present time
     temp = get_temp()
-    time = time.time()
+    timestamp = time.time()
 
     # insert new temp with time of temp data
-    cur.execute(f"INSERT INTO {table} (year, temp) VALUES ({time}, {temp});")
+    cur.execute(f"INSERT INTO {table} (year, temp) VALUES ({timestamp}, {temp});")
 
     # commit entry to database
     conn.commit()
