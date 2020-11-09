@@ -21,16 +21,19 @@
 
   <body>
 
-    <img id="dynamicImage" src="{{ url_for('static', filename='img/temperature_vs_time.png') }}">
+    <img id="dynamicImage" src="/static/img/temperature_vs_time.png">
 
     <script>
 
       var socket =  io.connect(location.origin);
+      var img = document.getElementById("dynamicImage");
 
-      socket.on("new_plot", function() {
+      socket.on("plot_updated", function() {
 
         var src_append = "?" + new Date().valueOf();
-        document.getElementById("dynamicImage").src += src_append;
+        img.src += src_append;
+
+        socket.emit("update_plot");
 
       });
 

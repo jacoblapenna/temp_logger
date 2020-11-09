@@ -56,23 +56,19 @@ def insert_temp(connection, cursor, table):
     # commit entry to database
     connection.commit()
 
-def record_data(table, s):
+def record_data(connector, cursor, table):
     """ run in another process to log data """
 
-    conn = pg.connect("dbname=garage_temps")
-    cur = conn.cursor()
-
-    cur.execute(f"CREATE TABLE IF NOT EXISTS {table} (time float, temp float);")
+    cursor.execute(f"CREATE TABLE IF NOT EXISTS {table} (time float, temp float);")
 
     while True:
         try:
-            insert_temp(conn, cur, table)
+            insert_temp(connector, cursor, table)
             time.sleep(1)
-            plot_data(cur, table, s)
         except KeyboardInterrupt:
             break
 
-def plot_data(cursor, table, socket):
+def plot_data():
     """ create png of plotted data for page to serve """
 
     cursor.execute(f"SELECT * FROM {table};")
@@ -114,9 +110,23 @@ def plot_data(cursor, table, socket):
 def homepage():
     return render_template("index.html")
 
+@socketio.on("update_plot")
+def update_plot():
+    """ update plot """
+
+    time.sleep(1)
+    plot_data()
+
+    socketio.emit("plot_updated")
+
 if __name__ == "__main__":
 
-    logger = Process(target=record_data, args=("test", socketio,))
+    global conn, cur
+
+    conn = pg.connect("dbname=garage_temps")
+    cur = conn.cursor()
+
+    logger = Process(target=record_data, args=(conn, cur, "test",))
     logger.start()
 
     ip = get_ip_address()
