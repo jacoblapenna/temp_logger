@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from sense_hat import SenseHat
 from flask import Flask, render_template
 from flask_socketio import SocketIO
+import socket as sock
 import psycopg2 as db
 import time
 
