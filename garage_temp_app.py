@@ -43,7 +43,7 @@ def get_temp():
     # get average of two sensors, convert, and return
     return round(((h_temp + p_temp) / 2)*(9/5) + 32, 2)
 
-def insert_temp():
+def insert_temp(cursor, table):
     """ get's current temp and time and inserts into database """
 
     # get temp data and present time
@@ -51,7 +51,7 @@ def insert_temp():
     timestamp = time.time()
 
     # insert new temp with time of temp data
-    cur.execute(f"INSERT INTO {table} (time, temp) VALUES ({timestamp}, {temp});")
+    cursor.execute(f"INSERT INTO {table} (time, temp) VALUES ({timestamp}, {temp});")
 
     # commit entry to database
     conn.commit()
@@ -66,7 +66,7 @@ def record_data(table):
 
     while True:
         try:
-            insert_temp()
+            insert_temp(cur, table)
             time.sleep(1)
             plot_data(cur, table)
         except KeyboardInterrupt:
