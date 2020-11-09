@@ -1,7 +1,13 @@
-from sense_hat import SenseHat
-import psycopg2 as db
+#! /usr/bin/python
+
 from datetime import datetime as dt
+import matplotlib.pyplot as plt
+from sense_hat import SenseHat
+from flask import Flask
+import psycopg2 as db
 import time
+
+app = Flask(__name__)
 
 conn = db.connect("dbname=garage_temps")
 cur = conn.cursor()
@@ -35,10 +41,18 @@ def insert_temp():
     # commit entry to database
     conn.commit()
 
+def record_data():
+    """ run in another process to log data """
 
-while True:
-    try:
-        insert_temp()
-        time.sleep(1)
-    except KeyboardInterrupt:
-        break
+    while True:
+        try:
+            insert_temp()
+            time.sleep(1)
+        except KeyboardInterrupt:
+            break
+
+"""
+One child process to log data
+One child process to plot logged data
+main process serves page that shows plot
+"""
