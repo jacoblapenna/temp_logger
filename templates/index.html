@@ -23,8 +23,14 @@
 
     <script>
 
-      var src_append = "?" + new Date().valueOf();
-      document.getElementById("dynamicImage").src += src_append;
+      var socket =  io.connect(location.origin);
+
+      socket.on("new_plot", function() {
+
+        var src_append = "?" + new Date().valueOf();
+        document.getElementById("dynamicImage").src += src_append;
+
+      });
 
     </script>
 

@@ -108,6 +108,8 @@ def plot_data(cursor, table):
     fig.savefig("static/img/temperature_vs_time.png", bbox_inches="tight")
     plt.close()
 
+    scoketio.emit("new_plot", broadcast=True)
+
 @app.route("/")
 def homepage():
     return render_template("index.html")
