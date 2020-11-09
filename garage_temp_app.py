@@ -116,7 +116,7 @@ def homepage():
 
 if __name__ == "__main__":
 
-    logger = Process(target=record_data, args=("test",))
+    logger = Process(target=record_data, args=("test", socketio,))
     logger.start()
 
     ip = get_ip_address()
