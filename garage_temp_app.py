@@ -1,18 +1,21 @@
 #! /usr/bin/python
 
-from datetime import datetime as dt
-import matplotlib.pyplot as plt
-from sense_hat import SenseHat
+from matplotlib.dates import RRuleLocator, DAILY, HOURLY, rrulewrapper, DateFormatter
 from flask import Flask, render_template
 from flask_socketio import SocketIO
+import matplotlib.dates as pltdt
+import matplotlib.pyplot as plt
+from sense_hat import SenseHat
 import socket as sock
-import psycopg2 as db
+import psycopg2 as pg
+import pandas as pd
+import numpy as np
 import time
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-conn = db.connect("dbname=garage_temps")
+conn = pg.connect("dbname=garage_temps")
 cur = conn.cursor()
 
 table = "test"
@@ -67,6 +70,41 @@ def record_data():
             time.sleep(1)
         except KeyboardInterrupt:
             break
+
+def plot_data():
+    """ create png of plotted data for page to serve """
+
+    cur.execute(f"SELECT * FROM {table};")
+    data = pd.DataFrame(np.array(cur.fetchall()), columns=["time", "temp"])
+    critical_temp = 65
+
+    x = [pltdt.epoch2num(t) for t in data["time"]]
+    y = list(data["temp"])
+    thresh = [critical_temp for n in range(len(x))]
+    t_above = [True if t > critical_temp else False for t in y]
+    t_below = [not b for b in t_above]
+
+    fig, ax = plt.subplots(figsize=(8,5), dpi=300)
+    plt.plot_date(x, y, '-', color="black", label="Temperature ($^\circ$F)")
+    plt.plot_date(x, thresh, '--', color="grey", alpha=0.5, label=f"{critical_temp} $^\circ$F Threshold")
+    plt.ylim(20, 100)
+    plt.yticks([t for t in range(20, 101, 5)])
+    plt.fill_between(x, thresh, y, where=t_above, interpolate=True, color="green", alpha=0.5)
+    plt.fill_between(x, thresh, y, where=t_below, interpolate=True, color="red", alpha=0.5)
+    plt.title("Garage Temperature vs Time Historian")
+    plt.ylabel("Temperature ($^\circ$F)")
+    plt.xlabel("Time")
+    major_rule = rrulewrapper(DAILY, interval=1)
+    major_locator = RRuleLocator(major_rule)
+    ax.xaxis.set_major_locator(major_locator)
+    major_formatter = DateFormatter("%a")
+    ax.xaxis.set_major_formatter(major_formatter)
+    minor_rule = rrulewrapper(HOURLY, interval=6)
+    minor_locator = RRuleLocator(minor_rule)
+    ax.xaxis.set_minor_locator(minor_locator)
+    plt.legend()
+    plt.grid(which="both")
+    fig.savefig("temperature_vs_time.png")
 
 @app.route("/")
 def homepage():
