@@ -3,6 +3,7 @@
 from matplotlib.dates import RRuleLocator, DAILY, HOURLY, rrulewrapper, DateFormatter
 from flask import Flask, render_template
 from flask_socketio import SocketIO
+from multiprocessing import Process
 import matplotlib.dates as pltdt
 import matplotlib.pyplot as plt
 from sense_hat import SenseHat
@@ -68,6 +69,7 @@ def record_data():
         try:
             insert_temp()
             time.sleep(1)
+            plot_data()
         except KeyboardInterrupt:
             break
 
@@ -104,13 +106,17 @@ def plot_data():
     ax.xaxis.set_minor_locator(minor_locator)
     plt.legend()
     plt.grid(which="both")
-    fig.savefig("temperature_vs_time.png")
+    fig.savefig("static/img/temperature_vs_time.png")
 
 @app.route("/")
 def homepage():
     return render_template("index.html")
 
 if __name__ == "__main__":
+
+    logger = Process(target=record_data)
+    logger.start()
+
     ip = get_ip_address()
     print("Attempting to serve page on %s:%d" % (ip, 8080))
     socketio.run(app,
@@ -119,9 +125,3 @@ if __name__ == "__main__":
                  use_reloader=True,
                  debug=False,
                  extra_files=['templates/index.html'])
-
-"""
-One child process to log data
-One child process to plot logged data
-main process serves page that shows plot
-"""
