@@ -107,7 +107,7 @@ def plot_data():
     plt.legend()
     plt.grid(which="both")
     fig.savefig("static/img/temperature_vs_time.png")
-    fig.close()
+    plt.close()
 
 @app.route("/")
 def homepage():
