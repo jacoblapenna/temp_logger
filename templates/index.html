@@ -26,16 +26,27 @@
 
     var socket =  io.connect(location.origin);
     var img = document.getElementById("dynamicImage");
+    var src_append;
+
+    function update_plot() {
+
+      src_append = "?" + new Date().valueOf();
+      img.src += src_append;
+      console.log(img.src);
+      socket.emit("update_plot");
+
+    }
 
     socket.on("plot_updated", function() {
 
-      var src_append = "?" + new Date().valueOf();
-      img.src += src_append;
-
-      console.log("Plot updated");
+      update_plot();
       socket.emit("update_plot");
 
     });
+
+    window.onload = function() {
+      update_plot();
+    };
 
   </script>
 
