@@ -67,7 +67,7 @@ def record_data(table):
     while True:
         try:
             insert_temp(logger_conn, logger_curs, table)
-            time.sleep(1)
+            time.sleep(60)
         except KeyboardInterrupt:
             break
 
@@ -121,10 +121,8 @@ def homepage():
 def update_plot():
     """ update plot """
 
-    time.sleep(5)
     plot_data()
-
-    print("plot updated")
+    
     socketio.emit("plot_updated")
 
 if __name__ == "__main__":

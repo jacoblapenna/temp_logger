@@ -32,7 +32,6 @@
 
       src_append = "?" + new Date().valueOf();
       img.src = "/static/img/temperature_vs_time.png" + src_append;
-      console.log(img.src);
       socket.emit("update_plot");
 
     }
