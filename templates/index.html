@@ -33,6 +33,7 @@
         var src_append = "?" + new Date().valueOf();
         img.src += src_append;
 
+        console.log("Plot updated");
         socket.emit("update_plot");
 
       });

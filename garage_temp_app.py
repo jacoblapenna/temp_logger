@@ -104,8 +104,6 @@ def plot_data():
     fig.savefig("static/img/temperature_vs_time.png", bbox_inches="tight")
     plt.close()
 
-    socket.emit("new_plot", broadcast=True)
-
 @app.route("/")
 def homepage():
     return render_template("index.html")
@@ -117,6 +115,7 @@ def update_plot():
     time.sleep(1)
     plot_data()
 
+    print("plot updated")
     socketio.emit("plot_updated")
 
 if __name__ == "__main__":
