@@ -122,12 +122,12 @@ def update_plot():
     """ update plot """
 
     plot_data()
-    
+
     socketio.emit("plot_updated")
 
 if __name__ == "__main__":
 
-    table = "test"
+    table = "initial_primer"
 
     logger = Process(target=record_data, args=(table,))
     logger.start()
