@@ -56,14 +56,17 @@ def insert_temp(connection, cursor, table):
     # commit entry to database
     connection.commit()
 
-def record_data(connector, cursor, table):
+def record_data(table):
     """ run in another process to log data """
 
-    cursor.execute(f"CREATE TABLE IF NOT EXISTS {table} (time float, temp float);")
+    logger_conn = pg.connect("dbname=garage_temps")
+    logger_curs = logger_conn.cursor()
+
+    logger_curs.execute(f"CREATE TABLE IF NOT EXISTS {table} (time float, temp float);")
 
     while True:
         try:
-            insert_temp(connector, cursor, table)
+            insert_temp(logger_conn, logger_curs, table)
             time.sleep(1)
         except KeyboardInterrupt:
             break
@@ -71,7 +74,10 @@ def record_data(connector, cursor, table):
 def plot_data():
     """ create png of plotted data for page to serve """
 
-    cur.execute(f"SELECT * FROM {table};")
+    plotter_conn = pg.connect("dbname=garage_temps")
+    plotter_curs = plotter_conn.cursor()
+
+    plotter_curs.execute(f"SELECT * FROM {table};")
     data = pd.DataFrame(np.array(cur.fetchall()), columns=["time", "temp"])
     critical_temp = 65
 
@@ -104,6 +110,9 @@ def plot_data():
     fig.savefig("static/img/temperature_vs_time.png", bbox_inches="tight")
     plt.close()
 
+    plotter_conn.commit()
+    plotter_conn.close()
+
 @app.route("/")
 def homepage():
     return render_template("index.html")
@@ -120,14 +129,9 @@ def update_plot():
 
 if __name__ == "__main__":
 
-    global conn, cur, table
-
     table = "test"
 
-    conn = pg.connect("dbname=garage_temps")
-    cur = conn.cursor()
-
-    logger = Process(target=record_data, args=(conn, cur, table,))
+    logger = Process(target=record_data, args=(table,))
     logger.start()
 
     ip = get_ip_address()
