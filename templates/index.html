@@ -5,16 +5,24 @@
   <head>
 
     <style>
+
       img {
         width: 100%;
       }
+
     </style>
+
+    <script type="text/javascript">
+
+      $("#dynamicImage").prop("src", "/static/img/temperature_vs_time.png?" + new Date().valueOf());
+
+    </script>
 
   </head>
 
   <body>
 
-    <img src="/static/img/temperature_vs_time.png">
+    <img id="dynamicImage" src="/static/img/temperature_vs_time.png">
 
   </body>
 
