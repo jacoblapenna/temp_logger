@@ -3,7 +3,7 @@
 from datetime import datetime as dt
 import matplotlib.pyplot as plt
 from sense_hat import SenseHat
-from flask import Flask
+from flask import Flask, render_template
 import psycopg2 as db
 import time
 
@@ -50,6 +50,10 @@ def record_data():
             time.sleep(1)
         except KeyboardInterrupt:
             break
+
+@app.route("/")
+def homepage():
+    return render_template("index.html")
 
 """
 One child process to log data
