@@ -71,8 +71,8 @@ def record_data(connector, cursor, table):
 def plot_data():
     """ create png of plotted data for page to serve """
 
-    cursor.execute(f"SELECT * FROM {table};")
-    data = pd.DataFrame(np.array(cursor.fetchall()), columns=["time", "temp"])
+    cur.execute(f"SELECT * FROM {table};")
+    data = pd.DataFrame(np.array(cur.fetchall()), columns=["time", "temp"])
     critical_temp = 65
 
     x = [pltdt.epoch2num(t) for t in data["time"]]
@@ -112,7 +112,7 @@ def homepage():
 def update_plot():
     """ update plot """
 
-    time.sleep(1)
+    time.sleep(5)
     plot_data()
 
     print("plot updated")
