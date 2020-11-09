@@ -108,7 +108,7 @@ def plot_data(cursor, table, socket):
     fig.savefig("static/img/temperature_vs_time.png", bbox_inches="tight")
     plt.close()
 
-    scoket.emit("new_plot", broadcast=True)
+    socket.emit("new_plot", broadcast=True)
 
 @app.route("/")
 def homepage():
