@@ -56,7 +56,7 @@ def insert_temp(connection, cursor, table):
     # commit entry to database
     connection.commit()
 
-def record_data(table):
+def record_data(table, s):
     """ run in another process to log data """
 
     conn = pg.connect("dbname=garage_temps")
@@ -68,11 +68,11 @@ def record_data(table):
         try:
             insert_temp(conn, cur, table)
             time.sleep(1)
-            plot_data(cur, table)
+            plot_data(cur, table, s)
         except KeyboardInterrupt:
             break
 
-def plot_data(cursor, table):
+def plot_data(cursor, table, socket):
     """ create png of plotted data for page to serve """
 
     cursor.execute(f"SELECT * FROM {table};")
@@ -108,7 +108,7 @@ def plot_data(cursor, table):
     fig.savefig("static/img/temperature_vs_time.png", bbox_inches="tight")
     plt.close()
 
-    scoketio.emit("new_plot", broadcast=True)
+    scoket.emit("new_plot", broadcast=True)
 
 @app.route("/")
 def homepage():
