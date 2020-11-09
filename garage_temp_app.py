@@ -120,12 +120,14 @@ def update_plot():
 
 if __name__ == "__main__":
 
-    global conn, cur
+    global conn, cur, table
+
+    table = "test"
 
     conn = pg.connect("dbname=garage_temps")
     cur = conn.cursor()
 
-    logger = Process(target=record_data, args=(conn, cur, "test",))
+    logger = Process(target=record_data, args=(conn, cur, table,))
     logger.start()
 
     ip = get_ip_address()

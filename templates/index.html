@@ -1,45 +1,44 @@
 <!DOCTYPE html>
-
 <html>
+<head>
 
-  <head>
+  <title>Garage Temperature</title>
 
-    <style>
+  <style>
 
-      img {
-        width: 100%;
-        height: 95vh;
-      }
+    img {
+      width: 100%;
+      height: 95vh;
+    }
 
-    </style>
+  </style>
 
-    <script src="{{ url_for('static', filename='js/jquery-3.3.1.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery-3.3.1.js') }}"></script>
 
-    <script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
 
-  </head>
+</head>
+<body>
 
-  <body>
+  <img id="dynamicImage" src="/static/img/temperature_vs_time.png">
 
-    <img id="dynamicImage" src="/static/img/temperature_vs_time.png">
+  <script>
 
-    <script>
+    var socket =  io.connect(location.origin);
+    var img = document.getElementById("dynamicImage");
 
-      var socket =  io.connect(location.origin);
-      var img = document.getElementById("dynamicImage");
+    socket.on("plot_updated", function() {
 
-      socket.on("plot_updated", function() {
+      var src_append = "?" + new Date().valueOf();
+      img.src += src_append;
 
-        var src_append = "?" + new Date().valueOf();
-        img.src += src_append;
+      console.log("Plot updated");
+      socket.emit("update_plot");
 
-        console.log("Plot updated");
-        socket.emit("update_plot");
+    });
 
-      });
+  </script>
 
-    </script>
-
-  </body>
+</body>
 
 </html>
