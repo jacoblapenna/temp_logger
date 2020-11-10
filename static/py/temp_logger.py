@@ -45,3 +45,7 @@ def record_data():
         except:
             logger_conn.close()
             break
+
+if __name__ == "__main__":
+
+    record_data()
