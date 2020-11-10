@@ -39,10 +39,10 @@ def record_data():
     """ run in another process to log data """
 
     while True:
-        rint("Recording temp")
+        print("Recording temp")
         insert_temp()
         time.sleep(60)
-        
+
 
 if __name__ == "__main__":
 
