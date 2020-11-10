@@ -40,6 +40,7 @@ def record_data():
 
     while True:
         try:
+            print("Recording temp")
             insert_temp()
             time.sleep(60)
         except:
