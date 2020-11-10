@@ -4,6 +4,7 @@ from matplotlib.dates import RRuleLocator, DAILY, HOURLY, rrulewrapper, DateForm
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from multiprocessing import Process
+from datetime import datetime as dt
 import matplotlib.dates as pltdt
 import matplotlib.pyplot as plt
 import socket as sock
@@ -39,7 +40,7 @@ def plot_data():
     data = pd.DataFrame(np.array(plotter_curs.fetchall()), columns=["time", "temp"])
     critical_temp = 65
 
-    x = [pltdt.epoch2num(t) for t in data["time"]]
+    x = [pltdt.date2num(dt.fromtimestamp(t)) for t in data["time"]]
     y = list(data["temp"])
     thresh = [critical_temp for n in range(len(x))]
     t_above = [True if t > critical_temp else False for t in y]
