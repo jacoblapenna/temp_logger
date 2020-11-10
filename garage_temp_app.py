@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-from matplotlib.dates import RRuleLocator, DAILY, HOURLY, rrulewrapper, DateFormatter
+from matplotlib.dates import DateFormatter, HourLocator
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from multiprocessing import Process
@@ -56,14 +56,14 @@ def plot_data():
     plt.title("Garage Temperature vs Time Historian")
     plt.ylabel("Temperature ($^\circ$F)")
     plt.xlabel("Time")
-    major_rule = rrulewrapper(DAILY, interval=1)
-    major_locator = RRuleLocator(major_rule)
+    major_locator = HourLocator(byhour=0)
     ax.xaxis.set_major_locator(major_locator)
     major_formatter = DateFormatter("%a")
     ax.xaxis.set_major_formatter(major_formatter)
-    minor_rule = rrulewrapper(HOURLY, interval=6)
-    minor_locator = RRuleLocator(minor_rule)
+    minor_locator = HourLocator(byhour=[6, 12, 18])
     ax.xaxis.set_minor_locator(minor_locator)
+    minor_formatter = DateFormatter("%H")
+    ax.xaxis.set_major_formatter(minor_formatter)
     plt.legend()
     plt.grid(which="both")
     fig.savefig("/home/pi/Projects/Garage_Temp_Logger/static/img/temperature_vs_time.png", bbox_inches="tight")
