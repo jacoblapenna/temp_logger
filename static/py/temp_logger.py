@@ -42,15 +42,7 @@ def record_data():
         rint("Recording temp")
         insert_temp()
         time.sleep(60)
-        """
-        try:
-            print("Recording temp")
-            insert_temp()
-            time.sleep(60)
-        except:
-            logger_conn.close()
-            break
-        """"
+        
 
 if __name__ == "__main__":
 
