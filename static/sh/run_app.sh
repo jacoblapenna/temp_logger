@@ -12,5 +12,4 @@ export PATH
 
 echo $PATH
 
-
 python
