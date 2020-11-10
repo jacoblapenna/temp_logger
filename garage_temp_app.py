@@ -65,7 +65,7 @@ def plot_data():
     ax.xaxis.set_minor_locator(minor_locator)
     plt.legend()
     plt.grid(which="both")
-    fig.savefig("static/img/temperature_vs_time.png", bbox_inches="tight")
+    fig.savefig("/home/pi/Projects/Garage_Temp_Logger/static/img/temperature_vs_time.png", bbox_inches="tight")
     plt.close()
 
     plotter_conn.commit()
