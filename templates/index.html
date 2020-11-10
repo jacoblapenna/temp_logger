@@ -24,27 +24,18 @@
 
   <script>
 
-    var socket =  io.connect(location.origin);
     var img = document.getElementById("dynamicImage");
     var src_append;
 
-    function update_plot() {
+    function update_src() {
 
       src_append = "?" + new Date().valueOf();
       img.src = "/static/img/temperature_vs_time.png" + src_append;
-      socket.emit("update_plot");
 
     }
 
-    socket.on("plot_updated", function() {
-
-      update_plot();
-      socket.emit("update_plot");
-
-    });
-
     window.onload = function() {
-      update_plot();
+      update_src();
     };
 
   </script>

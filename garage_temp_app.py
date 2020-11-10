@@ -6,7 +6,6 @@ from flask_socketio import SocketIO
 from multiprocessing import Process
 import matplotlib.dates as pltdt
 import matplotlib.pyplot as plt
-from sense_hat import SenseHat
 import socket as sock
 import psycopg2 as pg
 import pandas as pd
@@ -15,8 +14,6 @@ import time
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-
-sense = SenseHat()
 
 def get_ip_address():
     """ get the server's ip """
@@ -31,45 +28,6 @@ def get_ip_address():
 	    s.close()
 
     return ip_address
-
-def get_temp():
-    """ get temp from sensors, averages, and converts to Fahrenheit """
-
-    # get temp from humidity sensor
-    h_temp = sense.get_temperature_from_humidity()
-    # get te,p from pressure sensor
-    p_temp = sense.get_temperature_from_pressure()
-
-    # get average of two sensors, convert, and return
-    return round(((h_temp + p_temp) / 2)*(9/5) + 32, 2)
-
-def insert_temp(connection, cursor, table):
-    """ get's current temp and time and inserts into database """
-
-    # get temp data and present time
-    temp = get_temp()
-    timestamp = time.time()
-
-    # insert new temp with time of temp data
-    cursor.execute(f"INSERT INTO {table} (time, temp) VALUES ({timestamp}, {temp});")
-
-    # commit entry to database
-    connection.commit()
-
-def record_data(table):
-    """ run in another process to log data """
-
-    logger_conn = pg.connect("dbname=garage_temps")
-    logger_curs = logger_conn.cursor()
-
-    logger_curs.execute(f"CREATE TABLE IF NOT EXISTS {table} (time float, temp float);")
-
-    while True:
-        try:
-            insert_temp(logger_conn, logger_curs, table)
-            time.sleep(60)
-        except KeyboardInterrupt:
-            break
 
 def plot_data():
     """ create png of plotted data for page to serve """
@@ -115,22 +73,14 @@ def plot_data():
 
 @app.route("/")
 def homepage():
-    return render_template("index.html")
-
-@socketio.on("update_plot")
-def update_plot():
-    """ update plot """
-
     plot_data()
-
-    socketio.emit("plot_updated")
+    return render_template("index.html")
 
 if __name__ == "__main__":
 
-    table = "initial_primer"
+    global table
 
-    logger = Process(target=record_data, args=(table,))
-    logger.start()
+    table = "initial_primer"
 
     ip = get_ip_address()
     print("Attempting to serve page on %s:%d" % (ip, 8080))
