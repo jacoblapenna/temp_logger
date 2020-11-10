@@ -63,7 +63,7 @@ def plot_data():
     minor_locator = HourLocator(byhour=[6, 12, 18])
     ax.xaxis.set_minor_locator(minor_locator)
     minor_formatter = DateFormatter("%H")
-    ax.xaxis.set_major_formatter(minor_formatter)
+    ax.xaxis.set_minor_formatter(minor_formatter)
     plt.legend()
     plt.grid(which="both")
     fig.savefig("/home/pi/Projects/Garage_Temp_Logger/static/img/temperature_vs_time.png", bbox_inches="tight")
