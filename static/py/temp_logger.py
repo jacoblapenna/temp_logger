@@ -39,7 +39,6 @@ def record_data():
     """ run in another process to log data """
 
     while True:
-        print("Recording temp")
         insert_temp()
         time.sleep(60)
 
