@@ -22,7 +22,7 @@ def get_temp():
     # get average of two sensors, convert, and return
     return round(((h_temp + p_temp) / 2)*(9/5) + 32, 2)
 
-def insert_temp(connection, cursor, table):
+def insert_temp():
     """ get's current temp and time and inserts into database """
 
     # get temp data and present time
