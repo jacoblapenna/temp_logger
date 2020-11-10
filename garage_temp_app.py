@@ -56,7 +56,7 @@ def plot_data():
     plt.title("Garage Temperature vs Time Historian")
     plt.ylabel("Temperature ($^\circ$F)")
     plt.xlabel("Time")
-    major_locator = HourLocator(byhour=0)
+    major_locator = HourLocator(byhour=[0])
     ax.xaxis.set_major_locator(major_locator)
     major_formatter = DateFormatter("%a")
     ax.xaxis.set_major_formatter(major_formatter)
