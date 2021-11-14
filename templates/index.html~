@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>Garage Temperature</title>
+
+  <style>
+
+    img {
+      width: 100%;
+      height: 95vh;
+    }
+
+  </style>
+
+  <script src="{{ url_for('static', filename='js/jquery-3.3.1.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+
+</head>
+<body>
+
+  <img id="dynamicImage" src="/static/img/temperature_vs_time.png">
+
+  <script>
+
+    var socket =  io.connect(location.origin);
+    var img = document.getElementById("dynamicImage");
+    var src_append;
+
+    function update_plot() {
+
+      src_append = "?" + new Date().valueOf();
+      img.src = "/static/img/temperature_vs_time.png" + src_append;
+      socket.emit("update_plot");
+
+    }
+
+    socket.on("plot_updated", function() {
+
+      update_plot();
+      socket.emit("update_plot");
+
+    });
+
+    window.onload = function() {
+      update_plot();
+    };
+
+  </script>
+
+</body>
+
+</html>

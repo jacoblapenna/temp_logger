@@ -4,7 +4,7 @@ import time
 
 sense = SenseHat()
 
-table = "initial_primer"
+table = "second_primer"
 
 logger_conn = pg.connect("dbname=garage_temps")
 logger_curs = logger_conn.cursor()

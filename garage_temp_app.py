@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
     global table
 
-    table = "initial_primer"
+    table = "second_primer"
 
     ip = get_ip_address()
     print("Attempting to serve page on %s:%d" % (ip, 8080))
